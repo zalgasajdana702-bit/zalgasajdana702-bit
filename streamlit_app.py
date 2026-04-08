@@ -23,7 +23,7 @@ if st.button("Сгенерировать"):
     else:
         try:
             genai.configure(api_key=api_key)
-            model = genai.GenerativeModel("gemini-pro")
+            model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
             prompt = f"""
             Улучши текст в стиле: {tone}.
