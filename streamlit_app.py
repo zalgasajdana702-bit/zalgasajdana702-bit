@@ -1,41 +1,51 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Настройка страницы
 st.set_page_config(page_title="AI Text Wizard", layout="centered")
 
-# Боковое меню (Sidebar)
 with st.sidebar:
-    st.title("⚙️ Настройки")
-    api_key = st.text_input("Введите Gemini API Key:", type="password")
-    st.info("Получите ключ в Google AI Studio")
+    st.title("Настройки")
+    api_key = st.text_input("Gemini API Key", type="password")
 
-# Основной интерфейс
-st.title("🧙‍♂️ AI Text Wizard")
-st.subheader("Превращу твои мысли в идеальный пост")
+st.title("AI Text Wizard")
+st.write("Улучшу твой текст или идею")
 
-# Поле ввода
-user_input = st.text_area("Введите текст или идею:", placeholder="Например: Напиши пост про пользу сна для студентов")
+user_input = st.text_area("Текст:", height=150)
 
-# Кнопка запуска
-if st.button("Сгенерировать магию ✨"):
-    if not api_key:
-        st.error("Сначала введи API ключ в боковом меню!")
-    elif not user_input:
-        st.warning("Напиши хоть что-нибудь!")
+tone = st.selectbox(
+    "Стиль:",
+    ["Профессиональный", "Дружелюбный", "Краткий", "Креативный"]
+)
+
+if st.button("Сгенерировать"):
+    if not api_key or not user_input:
+        st.warning("Заполни все поля")
     else:
         try:
-            # Настройка AI
             genai.configure(api_key=api_key)
-            
-            # ТУТ ИСПРАВЛЕНИЕ: Используем модель 'gemini-1.5-pro'
-            # Она самая стабильная для всех версий API
-            model = genai.GenerativeModel('gemini-1.5-pro')
-            
-            with st.spinner('AI думает...'):
-                # Добавляем параметр, чтобы точно сработало
-                response = model.generate_content(user_input)
-                
-            # Отображение результата
-            st.success("Готово!")
-            st.write(response.text)
+            model = genai.GenerativeModel("gemini-1.5-flash")
+
+            prompt = f"""
+            Улучши текст в стиле: {tone}.
+            Сделай его понятным, грамотным и интересным.
+
+            Текст:
+            {user_input}
+            """
+
+            with st.spinner("Генерация..."):
+                response = model.generate_content(prompt)
+
+            result = getattr(response, "text", None)
+
+            if not result and hasattr(response, "candidates"):
+                result = response.candidates[0].content.parts[0].text
+
+            if result:
+                st.success("Готово")
+                st.write(result)
+            else:
+                st.error("Не удалось получить ответ от модели")
+
+        except Exception as e:
+            st.error(f"Ошибка: {e}")
