@@ -1,51 +1,29 @@
 import streamlit as st
 import google.generativeai as genai
 
-st.set_page_config(page_title="AI Text Wizard", layout="centered")
+st.set_page_config(page_title="AI Helper")
 
 with st.sidebar:
     st.title("Настройки")
     api_key = st.text_input("Gemini API Key", type="password")
 
-st.title("AI Text Wizard")
-st.write("Улучшу твой текст или идею")
+st.title("🧙‍♂️ AI Мастер")
 
-user_input = st.text_area("Текст:", height=150)
+user_input = st.text_area("Что сделать?", placeholder="Напиши что-нибудь...")
 
-tone = st.selectbox(
-    "Стиль:",
-    ["Профессиональный", "Дружелюбный", "Краткий", "Креативный"]
-)
-
-if st.button("Сгенерировать"):
-    if not api_key or not user_input:
-        st.warning("Заполни все поля")
+if st.button("Запустить"):
+    if not api_key:
+        st.error("Вставь API ключ в боковое меню!")
     else:
         try:
             genai.configure(api_key=api_key)
+            # Используем flash-latest — она самая «живая» сейчас
             model = genai.GenerativeModel('gemini-1.5-flash-latest')
-
-            prompt = f"""
-            Улучши текст в стиле: {tone}.
-            Сделай его понятным, грамотным и интересным.
-
-            Текст:
-            {user_input}
-            """
-
-            with st.spinner("Генерация..."):
-                response = model.generate_content(prompt)
-
-            result = getattr(response, "text", None)
-
-            if not result and hasattr(response, "candidates"):
-                result = response.candidates[0].content.parts[0].text
-
-            if result:
-                st.success("Готово")
-                st.write(result)
-            else:
-                st.error("Не удалось получить ответ от модели")
-
+            
+            with st.spinner('Магия в процессе...'):
+                response = model.generate_content(user_input)
+                st.success("Готово:")
+                st.write(response.text)
         except Exception as e:
-            st.error(f"Ошибка: {e}")
+            st.error(f"Ошибка: {str(e)}")
+            st.info("Если видишь 404, проверь, не заблокирован ли Gemini в твоем регионе (иногда нужен VPN для работы API).")
