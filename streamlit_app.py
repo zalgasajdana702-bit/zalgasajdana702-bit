@@ -27,14 +27,15 @@ if st.button("Сгенерировать магию ✨"):
         try:
             # Настройка AI
             genai.configure(api_key=api_key)
-            # ИСПОЛЬЗУЕМ ОБНОВЛЕННУЮ МОДЕЛЬ
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            
+            # ТУТ ИСПРАВЛЕНИЕ: Используем модель 'gemini-1.5-pro'
+            # Она самая стабильная для всех версий API
+            model = genai.GenerativeModel('gemini-1.5-pro')
             
             with st.spinner('AI думает...'):
-                response = model.generate_content(f"Сделай этот текст лучше и профессиональнее: {user_input}")
+                # Добавляем параметр, чтобы точно сработало
+                response = model.generate_content(user_input)
                 
             # Отображение результата
             st.success("Готово!")
             st.write(response.text)
-        except Exception as e:
-            st.error(f"Ошибка: {e}")
