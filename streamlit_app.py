@@ -27,7 +27,8 @@ if st.button("Сгенерировать магию ✨"):
         try:
             # Настройка AI
             genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-pro')
+            # ИСПОЛЬЗУЕМ ОБНОВЛЕННУЮ МОДЕЛЬ
+            model = genai.GenerativeModel('gemini-1.5-flash')
             
             with st.spinner('AI думает...'):
                 response = model.generate_content(f"Сделай этот текст лучше и профессиональнее: {user_input}")
