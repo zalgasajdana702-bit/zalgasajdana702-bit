@@ -3,7 +3,7 @@ import google.generativeai as genai
 
 st.set_page_config(page_title="AI Text Wizard", layout="centered")
 
-API_KEY = "AIzaSyBg5AdafJe3IUi1EnkHLCqEp01j5ujLvfo"
+API_KEY = "AIzaSyDMqHsUwjAn4H2qp5hSVY33-qGWJnYJ9DE"
 genai.configure(api_key=API_KEY)
 
 st.title("AI Text Wizard")
