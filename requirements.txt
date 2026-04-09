@@ -1,2 +1,2 @@
-streamlit>=1.30.0
-pip install -q -U google-genai
+streamlit>=1.55.0
+google-generativeai>=1.2.0
