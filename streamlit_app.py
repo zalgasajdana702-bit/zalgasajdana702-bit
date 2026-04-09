@@ -3,12 +3,11 @@ import google.generativeai as genai
 
 st.set_page_config(page_title="AI Text Wizard", layout="centered")
 
-with st.sidebar:
-    st.title("Настройки")
-    api_key = st.text_input("Gemini API Key", type="password")
+API_KEY = "ТВОЙ_КЛЮЧ_ТУТ"
+genai.configure(api_key=API_KEY)
 
 st.title("AI Text Wizard")
-st.write("Улучшу твой текст или идею")
+st.write("Редактор текстов")
 
 user_input = st.text_area("Текст:", height=150)
 
@@ -18,20 +17,18 @@ tone = st.selectbox(
 )
 
 if st.button("Сгенерировать"):
-    if not api_key or not user_input:
-        st.warning("Заполни все поля")
+    if not user_input:
+        st.warning("Введи текст")
     else:
         try:
-            genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel("gemini-1.0-pro")
 
             prompt = f"""
-            Улучши текст в стиле: {tone}.
-            Сделай его понятным, грамотным и интересным.
+Перепиши текст в стиле: {tone}.
+Сделай его понятным и интересным.
 
-            Текст:
-            {user_input}
-            """
+{user_input}
+"""
 
             with st.spinner("Генерация..."):
                 response = model.generate_content(prompt)
@@ -42,10 +39,9 @@ if st.button("Сгенерировать"):
                 result = response.candidates[0].content.parts[0].text
 
             if result:
-                st.success("Готово")
                 st.write(result)
             else:
-                st.error("Не удалось получить ответ от модели")
+                st.error("Нет ответа")
 
         except Exception as e:
             st.error(f"Ошибка: {e}")
